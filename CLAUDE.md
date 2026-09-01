@@ -27,7 +27,7 @@ rsync su un DB vivo dà una copia incoerente (e per SQLite in WAL il recente sta
 ## ⚠️ Niente `set -e`, ed è una scelta
 Lo script conta errori e warning e li riporta. Con `errexit`, `((VAR++))` a variabile 0 ritorna exit 1 e **ucciderebbe il giro al primo warning, prima di ogni notifica**. È il difetto che aveva lo script originale da cui DABR nasce: `log_warn` era definito e mai chiamato, cioè una mina non ancora esplosa.
 
-## Difetti trovati dal banco, non a lettura (S592)
+## Difetti trovati dal banco, non a lettura
 - **Il dry-run creava una directory**: il `mkdir` dello snapshot stava prima del controllo `DRY_RUN`, e rsync `--dry-run` poi non ci scriveva. Restava una dir vuota che la retention contava come snapshot vero.
 - **Basename in collisione**: due path con lo stesso `basename` si sovrascrivono dentro lo snapshot. Controllato all'avvio, con exit 1 — prima che scriva, non alle 3 di notte.
 
@@ -41,7 +41,7 @@ Lo script conta errori e warning e li riporta. Con `errexit`, `((VAR++))` a vari
 `exit 1` se `COUNT_ERR > 0`, altrimenti 0. KCR rileva il fallimento.
 
 ## Origine
-Generalizzazione dello script `docker-serverdomotica.sh` del Sacerdote (repo `copie-mybunker`), che aveva già lo schema giusto — rsync + link-dest + daily/weekly — ma path e host cablati dentro, il report email che stampava la repr di una lista Python, e la mina di `set -e`.
+Generalizzazione di uno script rsync interno che aveva già lo schema giusto — rsync + link-dest + daily/weekly — ma path e host cablati dentro, il report email che stampava la repr di una lista Python, e la mina di `set -e`.
 
 ## Ecosistema (5 tool)
 KDD (MySQL/PG/Mongo) · DABS (SQLite) · DABV (volumi Docker) · **DABR** (path e file) · KCR (esegue i bash da Komodo)
