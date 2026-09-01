@@ -191,6 +191,11 @@ so you can see what happened without opening an SSH session.
 ## Requirements
 
 - Debian / Ubuntu host (any Linux with bash 4+ works)
+- **Run it as root.** Any directory the running user cannot read is skipped —
+  rsync returns 23, DABR reports a WARN, and the run still ends green. That is
+  enough to lose a service's data without noticing: Portainer, for one, keeps
+  its state in `root:root` directories with mode 700. Unless every path you
+  back up is owned by one unprivileged user, run as root.
 - `rsync`, and `ssh` only when `DEST_MODE="remote"`
 - `swaks` for email, `curl` for push notifications — both optional
 - The destination filesystem must support **hardlinks**: ext4, xfs, btrfs are
